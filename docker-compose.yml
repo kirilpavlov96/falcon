@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  shop:
+    build:
+      context: .
+      dockerfile: ./shop/src/main/docker/Dockerfile.native
+    ports:
+      - "8080:8080"
+    networks:
+      - quarkus
+  store:
+    build:
+      context: .
+      dockerfile: ./store/src/main/docker/Dockerfile.native
+    ports:
+      - "8081:8081"
+    networks:
+      - quarkus
+  mongodb:
+    image : mongo
+    container_name: mongodb
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ./mongodb/database:/data/db
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+    networks:
+      - quarkus
+
+networks:
+  quarkus:
+    driver: bridge
