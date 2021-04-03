@@ -21,7 +21,7 @@ public class OrderAssembler {
      * @return {@link OrderDTO}
      */
     public OrderDTO assemble(OrderEntity entity) {
-        return new OrderDTO(entity.getStatus(), entity.getProductRequests());
+        return new OrderDTO(entity.getUuid(), entity.getStatus(), entity.getProductRequests());
     }
 
     /**

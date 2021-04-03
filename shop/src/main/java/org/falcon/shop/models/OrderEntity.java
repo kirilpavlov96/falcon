@@ -4,6 +4,7 @@ import io.quarkus.mongodb.panache.MongoEntity;
 import org.bson.types.ObjectId;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Mongo entity for order.
@@ -11,6 +12,7 @@ import java.util.List;
 @MongoEntity(collection = "orders")
 public class OrderEntity {
     private ObjectId id;
+    private String uuid;
     private OrderStatusEnum status;
     private List<ProductRequest> productRequests;
 
@@ -26,6 +28,7 @@ public class OrderEntity {
      * @param productRequests {@link List} of {@link ProductRequest}
      */
     public OrderEntity(OrderStatusEnum status, List<ProductRequest> productRequests) {
+        this.uuid = UUID.randomUUID().toString();
         this.status = OrderStatusEnum.PROCESSED;
         this.productRequests = productRequests;
     }
@@ -36,6 +39,14 @@ public class OrderEntity {
 
     public void setId(ObjectId id) {
         this.id = id;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public OrderStatusEnum getStatus() {

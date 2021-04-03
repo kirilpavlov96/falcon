@@ -10,6 +10,7 @@ import java.util.List;
  * Data transfer object for order.
  */
 public class OrderDTO {
+    private String uuid;
     private OrderStatusEnum status;
     @NotEmpty
     private List<ProductRequest> productRequests;
@@ -23,12 +24,22 @@ public class OrderDTO {
     /**
      * Constructor using fields.
      *
+     * @param uuid            order uuid.
      * @param status          order status.
      * @param productRequests order product requests.
      */
-    public OrderDTO(OrderStatusEnum status, List<ProductRequest> productRequests) {
+    public OrderDTO(String uuid, OrderStatusEnum status, List<ProductRequest> productRequests) {
+        this.uuid = uuid;
         this.status = status;
         this.productRequests = productRequests;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public OrderStatusEnum getStatus() {

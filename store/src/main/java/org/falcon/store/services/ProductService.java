@@ -1,6 +1,7 @@
 package org.falcon.store.services;
 
 import org.falcon.store.dtos.ProductDTO;
+import org.falcon.store.exceptions.InvalidParameterException;
 import org.falcon.store.models.ProductEntity;
 import org.falcon.store.repositories.ProductRepository;
 
@@ -32,19 +33,22 @@ public class ProductService {
      *
      * @param products the product to create or update.
      */
-    public void createOrUpdateProducts(List<ProductDTO> products) {
-        List<ProductEntity> toPersist = new LinkedList<>();
-        if (products != null) {
-            products.forEach(productDTO -> {
-                ProductEntity productEntity = productRepository.findByName(productDTO.getName());
-                if (productEntity == null) {
-                    productEntity = new ProductEntity(productDTO.getName(), productDTO.getQuantity(), 0);
-                } else {
-                    productEntity.setQuantity(productEntity.getQuantity() + productDTO.getQuantity());
-                }
-                toPersist.add(productEntity);
-            });
+    public synchronized void createOrUpdateProducts(List<ProductDTO> products) throws InterruptedException {
+        if (products == null) {
+            throw new InvalidParameterException();
         }
+        List<ProductEntity> toPersist = new LinkedList<>();
+        products.forEach(productDTO -> {
+            ProductEntity productEntity = productRepository.findByName(productDTO.getName());
+            if (productEntity == null) {
+                productEntity = new ProductEntity(productDTO.getName(), productDTO.getQuantity(), 0);
+            } else {
+                productEntity.setQuantity(productEntity.getQuantity() + productDTO.getQuantity());
+                int outOfStock = Math.max(0, productEntity.getOutOfStock() - productDTO.getQuantity());
+                productEntity.setOutOfStock(outOfStock);
+            }
+            toPersist.add(productEntity);
+        });
         if (!toPersist.isEmpty()) {
             productRepository.persistOrUpdate(toPersist);
         }

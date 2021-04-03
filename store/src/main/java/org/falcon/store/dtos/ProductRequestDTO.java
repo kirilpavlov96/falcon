@@ -1,27 +1,18 @@
-package org.falcon.shop.models;
+package org.falcon.store.dtos;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
-import java.util.UUID;
 
 /**
  * Class containing name and quantity of the requested product item.
  */
-public class ProductRequest {
+public class ProductRequestDTO {
     private String uuid;
     private boolean completed;
     @NotEmpty
     private String name;
     @Positive
     private int quantity;
-
-    /**
-     * Default constructor.
-     */
-    public ProductRequest() {
-        this.uuid = UUID.randomUUID().toString();
-        this.completed = false;
-    }
 
     public String getUuid() {
         return uuid;
@@ -32,11 +23,15 @@ public class ProductRequest {
     }
 
     public boolean getCompleted() {
-        return this.completed;
+        return completed;
     }
 
     public void setCompleted(boolean completed) {
-        this.completed = completed;
+        completed = completed;
+    }
+
+    public boolean isCompleted() {
+        return completed;
     }
 
     public String getName() {

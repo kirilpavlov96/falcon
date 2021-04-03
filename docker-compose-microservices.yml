@@ -16,20 +16,6 @@ services:
       - "8081:8081"
     networks:
       - quarkus
-  mongodb:
-    image : mongo
-    container_name: mongodb
-    environment:
-      - PUID=1000
-      - PGID=1000
-    volumes:
-      - ./mongodb/database:/data/db
-    ports:
-      - 27017:27017
-    restart: unless-stopped
-    networks:
-      - quarkus
-
 networks:
   quarkus:
     driver: bridge

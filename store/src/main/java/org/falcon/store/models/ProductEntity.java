@@ -1,13 +1,14 @@
 package org.falcon.store.models;
 
 import io.quarkus.mongodb.panache.MongoEntity;
+import io.quarkus.mongodb.panache.PanacheMongoEntity;
 import org.bson.types.ObjectId;
 
 /**
  * Mongo entity for product.
  */
 @MongoEntity(collection = "products")
-public class ProductEntity {
+public class ProductEntity extends PanacheMongoEntity {
     private ObjectId id;
     private String name;
     private int quantity;

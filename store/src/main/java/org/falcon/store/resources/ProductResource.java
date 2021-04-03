@@ -2,13 +2,14 @@ package org.falcon.store.resources;
 
 import org.falcon.store.assemblers.ProductAssembler;
 import org.falcon.store.dtos.ProductDTO;
-import org.falcon.store.models.ProductEntity;
+import org.falcon.store.repositories.ProductRepository;
 import org.falcon.store.services.ProductService;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Collections;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -41,7 +42,8 @@ public class ProductResource {
      * @param products the product to create or update.
      */
     @POST
-    public void createOrUpdateProducts(List<ProductDTO> products) {
+    public Response createOrUpdateProducts(@Valid List<ProductDTO> products) throws InterruptedException {
         productService.createOrUpdateProducts(products);
+        return Response.ok().build();
     }
 }
