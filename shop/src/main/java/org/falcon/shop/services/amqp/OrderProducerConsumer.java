@@ -9,6 +9,7 @@ import org.falcon.shop.models.OrderEntity;
 import org.falcon.shop.models.OrderStatusEnum;
 import org.falcon.shop.models.ProductRequest;
 import org.falcon.shop.repositories.OrderRepository;
+import org.falcon.shop.resources.OrderSocket;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -25,6 +26,9 @@ public class OrderProducerConsumer {
 
     @Inject
     OrderRepository orderRepository;
+
+    @Inject
+    OrderSocket orderSocket;
 
     /**
      * Sends the order to the emitter.
@@ -43,9 +47,9 @@ public class OrderProducerConsumer {
             if (orderEntity != null) {
                 boolean isCompleted = orderEntity.getProductRequests().stream().allMatch(ProductRequest::getCompleted);
                 if (isCompleted) {
-                    //TODO SOCKET will be applied here
                     orderEntity.setStatus(OrderStatusEnum.COMPLETED);
                     orderRepository.update(orderEntity);
+                    orderSocket.broadcast(orderEntity);
                 }
             }
         }

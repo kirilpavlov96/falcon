@@ -29,7 +29,7 @@ public class ProductRepository implements PanacheMongoRepository<ProductEntity> 
      * @return List of {@link ProductEntity}
      */
     public List<ProductEntity> findAllOutOfStock() {
-        return find("outOfStock: { $gt: 0 }").list();
+        return find("{'outOfStock': { $gt: 0 }}").list();
     }
 
     /**
