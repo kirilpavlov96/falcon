@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  mongodb:
+    image : mongo
+    container_name: mongodb
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ./mongodb/database:/data/db
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+  artemis:
+    image: vromero/activemq-artemis:2-alpine-latest
+    ports:
+      - "5672:5672"
+      - "8161:8161"
+      - "61616:61616"
+    environment:
+      ARTEMIS_USERNAME: quarkus
+      ARTEMIS_PASSWORD: quarkus
+  shop:
+    build:
+      context: ./shop
+      dockerfile: ./src/main/docker/Dockerfile.jvm
+    ports:
+      - "8080:8080"
+  store:
+    build:
+      context: ./store
+      dockerfile: ./src/main/docker/Dockerfile.jvm
+    ports:
+      - "8081:8081"
