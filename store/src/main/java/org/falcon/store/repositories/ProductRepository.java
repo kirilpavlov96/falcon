@@ -33,6 +33,17 @@ public class ProductRepository implements PanacheMongoRepository<ProductEntity> 
     }
 
     /**
+     * Increments the quantity of the product.
+     *
+     * @param entity      the product.
+     * @param toIncrement the number to increment with
+     * @return long
+     */
+    public long incQuantityOfProduct(ProductEntity entity, int toIncrement) {
+        return decrQuantityOfProduct(entity, -toIncrement);
+    }
+
+    /**
      * Decrements the quantity of the product.
      *
      * @param entity      the product.
@@ -52,5 +63,24 @@ public class ProductRepository implements PanacheMongoRepository<ProductEntity> 
      */
     public void incOutOfStockOfProduct(ProductEntity entity, int toIncrement) {
         update("{ $inc: { 'outOfStock': ?1 } }", toIncrement).where("{ 'name': ?1 }", entity.getName());
+    }
+
+    /**
+     * Decrements the outOfStock of the product.
+     *
+     * @param entity      the product.
+     * @param toDecrement the number to decrement with
+     */
+    public void decOutOfStockOfProduct(ProductEntity entity, int toDecrement) {
+        incOutOfStockOfProduct(entity, -toDecrement);
+    }
+
+    /**
+     * Sets the maximum between the zero and the outOfStock field.
+     *
+     * @param entity      the product.
+     */
+    public void setOutOfStockToZeroIfNegative(ProductEntity entity) {
+        update("{ $max: { 'outOfStock': 0 } }").where("{ 'name': ?1 }", entity.getName());
     }
 }

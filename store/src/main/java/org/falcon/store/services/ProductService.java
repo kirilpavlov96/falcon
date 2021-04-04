@@ -7,7 +7,6 @@ import org.falcon.store.repositories.ProductRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -33,24 +32,20 @@ public class ProductService {
      *
      * @param products the product to create or update.
      */
-    public synchronized void createOrUpdateProducts(List<ProductDTO> products) throws InterruptedException {
+    public void createOrUpdateProducts(List<ProductDTO> products) throws InterruptedException {
         if (products == null) {
             throw new InvalidParameterException();
         }
-        List<ProductEntity> toPersist = new LinkedList<>();
         products.forEach(productDTO -> {
             ProductEntity productEntity = productRepository.findByName(productDTO.getName());
             if (productEntity == null) {
                 productEntity = new ProductEntity(productDTO.getName(), productDTO.getQuantity(), 0);
+                productRepository.persistOrUpdate(productEntity);
             } else {
-                productEntity.setQuantity(productEntity.getQuantity() + productDTO.getQuantity());
-                int outOfStock = Math.max(0, productEntity.getOutOfStock() - productDTO.getQuantity());
-                productEntity.setOutOfStock(outOfStock);
+                productRepository.incQuantityOfProduct(productEntity, productDTO.getQuantity());
+                productRepository.decOutOfStockOfProduct(productEntity, productDTO.getQuantity());
+                productRepository.setOutOfStockToZeroIfNegative(productEntity);
             }
-            toPersist.add(productEntity);
         });
-        if (!toPersist.isEmpty()) {
-            productRepository.persistOrUpdate(toPersist);
-        }
     }
 }
